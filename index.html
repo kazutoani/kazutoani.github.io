@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>橋口和斗 | ANIMATION CREATOR</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="apple-touch-icon" href="favicon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700&family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet" />
@@ -239,9 +241,49 @@
     #works { background: var(--bg); }
     .works-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(min(100%, 360px), 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 2rem;
     }
+    .more-card {
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1.2rem;
+      padding: 2rem;
+      text-decoration: none;
+      transition: border-color .3s, background .3s, transform .3s;
+      min-height: 200px;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    .more-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity .6s ease, transform .6s ease, border-color .3s, background .3s;
+    }
+    .more-card:hover {
+      border-color: var(--accent);
+      background: var(--bg2);
+      transform: translateY(-6px);
+    }
+    .more-card-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .more-card-text {
+      font-size: .9rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+    .more-card svg { color: var(--accent); transition: transform .3s; }
+    .more-card:hover svg { transform: translateX(5px); }
     .work-card {
       background: var(--bg2);
       border: 1px solid var(--border);
@@ -272,12 +314,47 @@
       top: 0; left: 0;
       width: 100%; height: 100%;
       object-fit: cover;
-      transition: transform .4s ease, filter .4s ease;
+      transition: opacity .4s ease, transform .4s ease, filter .4s ease;
       filter: brightness(.85);
     }
     .video-wrap:hover .video-thumb {
       transform: scale(1.04);
       filter: brightness(.65);
+    }
+    /* ホバープレビュー動画 */
+    .hover-video {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity .4s ease;
+      z-index: 1;
+    }
+    .video-wrap:hover .hover-video { opacity: 1; }
+    .video-wrap:hover .video-thumb  { opacity: 0; }
+    /* スマホ用プレビューボタン */
+    .mobile-preview-btn {
+      position: absolute;
+      bottom: .7rem; right: .7rem;
+      z-index: 3;
+      display: none;
+      align-items: center;
+      gap: .4rem;
+      padding: .35rem .8rem;
+      background: rgba(0,200,232,.2);
+      border: 1px solid rgba(0,200,232,.6);
+      color: var(--accent);
+      font-family: 'Montserrat', sans-serif;
+      font-size: .6rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+    }
+    @media (hover: none) {
+      .mobile-preview-btn { display: flex; }
     }
     .play-btn {
       position: absolute;
@@ -570,15 +647,20 @@
     <div class="works-grid">
 
       <div class="work-card" onclick="window.open('https://www.youtube.com/watch?v=9aQyk0ThQwU','_blank')">
-        <div class="video-wrap">
+        <div class="video-wrap" data-preview="preview-broadband.mp4">
           <img class="video-thumb"
             src="https://img.youtube.com/vi/9aQyk0ThQwU/maxresdefault.jpg"
             alt="ブロードバンド予備校" />
+          <video class="hover-video" src="preview-broadband.mp4" muted loop playsinline preload="none"></video>
           <div class="play-btn">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
               <polygon points="5,3 19,12 5,21"/>
             </svg>
           </div>
+          <button class="mobile-preview-btn" onclick="event.stopPropagation(); toggleMobilePreview(this)">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+            Preview
+          </button>
         </div>
         <div class="work-info">
           <span class="work-tag">Web CM</span>
@@ -588,15 +670,20 @@
       </div>
 
       <div class="work-card" onclick="window.open('https://www.youtube.com/watch?v=zl6j9FHtAO0','_blank')">
-        <div class="video-wrap">
+        <div class="video-wrap" data-preview="preview-dayone.mp4">
           <img class="video-thumb"
             src="https://img.youtube.com/vi/zl6j9FHtAO0/maxresdefault.jpg"
             alt="DAY ONE" />
+          <video class="hover-video" src="preview-dayone.mp4" muted loop playsinline preload="none"></video>
           <div class="play-btn">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
               <polygon points="5,3 19,12 5,21"/>
             </svg>
           </div>
+          <button class="mobile-preview-btn" onclick="event.stopPropagation(); toggleMobilePreview(this)">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+            Preview
+          </button>
         </div>
         <div class="work-info">
           <span class="work-tag">Web CM</span>
@@ -605,41 +692,17 @@
         </div>
       </div>
 
-      <div class="work-card" onclick="window.open('https://www.youtube.com/watch?v=aKJUPI6HxdM','_blank')">
-        <div class="video-wrap">
-          <img class="video-thumb"
-            src="https://img.youtube.com/vi/aKJUPI6HxdM/maxresdefault.jpg"
-            alt="レジデンス家賃保証" />
-          <div class="play-btn">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-              <polygon points="5,3 19,12 5,21"/>
-            </svg>
-          </div>
-        </div>
-        <div class="work-info">
-          <span class="work-tag">Sales Video</span>
-          <p class="work-title">レジデンス家賃保証</p>
-          <p class="work-desc">2025.10.28</p>
-        </div>
-      </div>
-
-      <div class="work-card" onclick="window.open('https://www.youtube.com/watch?v=ipUmqC_RP30','_blank')">
-        <div class="video-wrap">
-          <img class="video-thumb"
-            src="https://img.youtube.com/vi/ipUmqC_RP30/maxresdefault.jpg"
-            alt="自動車保険比較サービスかんたん" />
-          <div class="play-btn">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-              <polygon points="5,3 19,12 5,21"/>
-            </svg>
-          </div>
-        </div>
-        <div class="work-info">
-          <span class="work-tag">Web CM</span>
-          <p class="work-title">自動車保険比較サービスかんたん</p>
-          <p class="work-desc">2024.06.06</p>
-        </div>
-      </div>
+      <a href="works.html" class="more-card">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="3" width="20" height="14" rx="2"/>
+          <path d="M8 21h8M12 17v4"/>
+        </svg>
+        <p class="more-card-label">All Works</p>
+        <p class="more-card-text">他の実績を見る</p>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
 
     </div>
   </section>
@@ -746,6 +809,37 @@
   </footer>
 
   <script>
+    // ホバープレビュー（PC）
+    document.querySelectorAll('.video-wrap .hover-video').forEach(video => {
+      const wrap = video.closest('.video-wrap');
+      wrap.addEventListener('mouseenter', () => {
+        video.currentTime = 0;
+        video.play().catch(() => {});
+      });
+      wrap.addEventListener('mouseleave', () => {
+        video.pause();
+        video.currentTime = 0;
+      });
+    });
+
+    // プレビュー（スマホ）
+    function toggleMobilePreview(btn) {
+      const wrap = btn.closest('.video-wrap');
+      const video = wrap.querySelector('.hover-video');
+      const thumb = wrap.querySelector('.video-thumb');
+      const isPlaying = !video.paused;
+      if (isPlaying) {
+        video.pause(); video.currentTime = 0;
+        video.style.opacity = '0'; thumb.style.opacity = '1';
+        btn.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg> Preview';
+      } else {
+        video.currentTime = 0;
+        video.play().catch(() => {});
+        video.style.opacity = '1'; thumb.style.opacity = '0';
+        btn.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="6" y1="4" x2="6" y2="20"/><line x1="18" y1="4" x2="18" y2="20"/></svg> Stop';
+      }
+    }
+
     // Header scroll effect
     const header = document.getElementById('site-header');
     window.addEventListener('scroll', () => {
@@ -753,7 +847,7 @@
     });
 
     // Scroll reveal
-    const revealEls = document.querySelectorAll('.fade-up, .work-card, .service-card');
+    const revealEls = document.querySelectorAll('.fade-up, .work-card, .service-card, .more-card');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry, i) => {
         if (entry.isIntersecting) {
