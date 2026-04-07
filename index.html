@@ -527,6 +527,34 @@
       line-height: 1.7;
     }
 
+    /* ── PRICE ── */
+    #price { background: var(--bg2); border-top: 1px solid var(--border); }
+    .price-body {
+      max-width: 680px;
+      font-size: .95rem;
+      color: #bbb;
+      line-height: 2.1;
+      margin-bottom: 1.2rem;
+    }
+    .price-body strong {
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .price-note {
+      font-size: .8rem;
+      color: var(--muted);
+      letter-spacing: .05em;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+    .price-note::before {
+      content: '';
+      display: block;
+      width: 20px; height: 1px;
+      background: var(--muted);
+    }
+
     /* ── CONTACT ── */
     #contact {
       background: var(--bg2);
@@ -890,8 +918,48 @@
       0%, 100% { opacity: .7; transform: translateX(-50%) translateY(0); }
       50%       { opacity: 1;  transform: translateX(-50%) translateY(-3px); }
     }
-    /* スキャン中はヒントを隠す */
-    .photo-frame.scanning .photo-click-hint { opacity: 0; transition: opacity .2s; }
+    /* スキャン中はヒントを完全に非表示（animationも止める） */
+    .photo-frame.scanning .photo-click-hint {
+      opacity: 0;
+      visibility: hidden;
+      animation-play-state: paused;
+    }
+
+    /* ── スキャン実績オーバーレイ ── */
+    .scan-stats {
+      position: absolute;
+      inset: 0;
+      z-index: 11;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: .8rem;
+      pointer-events: none;
+      animation: stats-in .3s ease 1.05s both;
+    }
+    .scan-stat-item {
+      font-family: 'Montserrat', sans-serif;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--text);
+      background: rgba(0,0,0,.78);
+      border: 1px solid var(--accent);
+      padding: .4rem 1.1rem;
+      backdrop-filter: blur(4px);
+      white-space: nowrap;
+      box-shadow: 0 0 14px rgba(0,200,232,.2);
+    }
+    @keyframes stats-in {
+      from { opacity: 0; transform: scale(.93); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes stats-out {
+      from { opacity: 1; }
+      to   { opacity: 0; }
+    }
 
     /* ── タップできる要素のビジュアル ── */
     .service-card,
@@ -1166,6 +1234,19 @@
     </div>
   </section>
 
+  <!-- PRICE -->
+  <section id="price">
+    <p class="section-label fade-up">Price</p>
+    <h2 class="section-title fade-up">Price.</h2>
+    <p class="price-body fade-up">
+      料金は案件の内容・規模によって異なるため、明確な定価は設けておりません。<br>
+      おおよその目安として、通常の映像制作は <strong>¥50,000〜（税別）</strong> からご相談いただいています。<br>
+      ただし、簡易な編集・小規模案件はこの限りではありません。<br>
+      まずはお気軽にご相談ください。
+    </p>
+    <p class="price-note fade-up">平日は即時対応も可能です。</p>
+  </section>
+
   <!-- CONTACT -->
   <section id="contact">
     <p class="section-label fade-up">Contact</p>
@@ -1254,6 +1335,14 @@
     const photoFrame = document.getElementById('photo-frame');
     if (photoFrame) {
       photoFrame.addEventListener('click', () => {
+        // 実績表示中はクリックで閉じる
+        const existingStats = photoFrame.querySelector('.scan-stats');
+        if (existingStats) {
+          existingStats.style.transition = 'opacity .3s';
+          existingStats.style.opacity = '0';
+          setTimeout(() => existingStats.remove(), 300);
+          return;
+        }
         if (photoFrame.classList.contains('scanning')) return;
         const inner = photoFrame.querySelector('.photo-inner');
         const img   = inner.querySelector('img');
@@ -1292,9 +1381,19 @@
         data.textContent = 'SCANNING... KH-2026';
         items.push(data);
 
+        // 実績オーバーレイ
+        const stats = document.createElement('div');
+        stats.className = 'scan-stats';
+        ['年間50本以上制作', '即時修正等も対応', 'ココナラPRO認定'].forEach(text => {
+          const item = document.createElement('div');
+          item.className = 'scan-stat-item';
+          item.textContent = text;
+          stats.appendChild(item);
+        });
         items.forEach(el => inner.appendChild(el));
+        inner.appendChild(stats);
 
-        // 後片付け
+        // 後片付け（statsは残す）
         setTimeout(() => {
           photoFrame.classList.remove('scanning');
           items.forEach(el => el.remove());
